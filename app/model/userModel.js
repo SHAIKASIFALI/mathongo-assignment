@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const Schema = mongoose.Schema;
 
@@ -43,6 +44,23 @@ const userSchema = new Schema({
   },
 });
 
+// hash the password before it gets saved
+userSchema.pre("save", async function (next) {
+  const user = this;
+  const hash = await bcrypt.hash(this.password, 10);
+  user.password = hash;
+  next();
+});
+
+// Verify password
+userSchema.methods.verifyPassword = async function (candidatePassword) {
+  try {
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    return isMatch;
+  } catch (err) {
+    throw err;
+  }
+};
 const User = mongoose.model("user", userSchema);
 
 module.exports = User;
