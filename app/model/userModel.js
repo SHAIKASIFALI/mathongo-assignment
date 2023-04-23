@@ -33,6 +33,14 @@ const userSchema = new Schema({
       ref: "shorturl",
     },
   ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const User = mongoose.model("user", userSchema);
